@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 import configparser
 import os
+import winsound
 from client import IMClient
 
 try:
@@ -9,6 +10,7 @@ try:
     toaster = ToastNotifier()
 except:
     toaster = None
+
 
 def load_config():
     cfg = configparser.ConfigParser()
@@ -18,6 +20,7 @@ def load_config():
             cfg.write(f)
     cfg.read('config.ini')
     return cfg['DEFAULT']['server_ip'], int(cfg['DEFAULT']['server_port']), cfg['DEFAULT']['name']
+
 
 class App(tk.Tk):
     def __init__(self):
@@ -57,14 +60,24 @@ class App(tk.Tk):
         sender = msg.get('from')
         body = msg.get('body')
         self.append_text(f"[{sender}] {body}")
+
+        winsound.MessageBeep(winsound.MB_ICONASTERISK)
+
         if toaster:
-            toaster.show_toast(f"Mensaje de {sender}", body, duration=4, threaded=True)
+            toaster.show_toast(
+                f"Mensaje de {sender}",
+                body,
+                duration=4,
+                icon_path="icono.ico" if os.path.exists("icono.ico") else None,
+                threaded=True
+            )
 
     def append_text(self, txt):
         self.text.configure(state='normal')
         self.text.insert('end', txt + "\n")
-        self.text.configure(state='disabled')
+        self.text.configure('disabled')
         self.text.see('end')
+
 
 if __name__ == '__main__':
     App().mainloop()
