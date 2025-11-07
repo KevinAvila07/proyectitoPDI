@@ -75,7 +75,7 @@ class App(tk.Tk):
     def append_text(self, txt):
         self.text.configure(state='normal')
         self.text.insert('end', txt + "\n")
-        self.text.configure('disabled')
+        self.text.configure(state='disabled')
         self.text.see('end')
 
 
